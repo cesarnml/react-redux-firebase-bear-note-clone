@@ -19,6 +19,22 @@ const store = createStore(
   composeEnhancers(applyMiddleware(thunk))
 )
 
+const onDragEnd = result => {
+  //* Logic Later
+  const { destination, source, dragableId } = result
+  if (!destination) {
+    return
+  }
+
+  if (
+    (destination.droppableId =
+      source.droppableId && destination.index === source.index)
+  ) {
+    return
+  }
+  const column = this.state.column[source.droppableId]
+}
+
 ReactDOM.render(
   <Provider store={store}>
     <Router>

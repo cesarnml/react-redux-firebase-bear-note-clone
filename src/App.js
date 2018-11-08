@@ -7,12 +7,28 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { TweenMax } from 'gsap/all'
 import * as actions from './store/actions'
 import { connect } from 'react-redux'
+import { DragDropContext } from 'react-beautiful-dnd'
+
 class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
       isListNote: true,
       isCreateNote: false
+    }
+  }
+  onDragEnd = result => {
+    console.log(result, result)
+    //* Logic Later
+    const { destination, source, draggableId } = result
+    if (!destination) {
+      return
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
     }
   }
 
@@ -75,7 +91,13 @@ class App extends Component {
               <Route
                 exact
                 path='/'
-                render={props => <NoteListContainer {...props} />}
+                render={props => {
+                  return (
+                    <DragDropContext onDragEnd={this.onDragEnd}>
+                      <NoteListContainer {...props} />
+                    </DragDropContext>
+                  )
+                }}
               />
               <Route
                 path='/create'
