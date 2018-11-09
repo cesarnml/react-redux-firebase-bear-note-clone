@@ -81,7 +81,6 @@ class NoteListContainer extends Component {
   }
 
   onDragEnd = result => {
-    console.log(result)
     if (!result.destination) {
       return
     }

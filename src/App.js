@@ -7,6 +7,8 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { TweenMax } from 'gsap/all'
 import * as actions from './store/actions'
 import { connect } from 'react-redux'
+import { DragDropContext } from 'react-beautiful-dnd'
+import { Transition } from 'react-spring'
 
 class App extends Component {
   constructor (props) {
@@ -17,13 +19,8 @@ class App extends Component {
     }
   }
 
-  componentDidMount () {
-    this.props.fetchNotes()
-  }
-
   render () {
     const { location } = this.props
-    const { isListNote, isCreateNote } = this.state
     return (
       <div
         style={{
@@ -34,8 +31,8 @@ class App extends Component {
           backgroundColor: 'rgb(250,250,250)'
         }}
       >
-        <TransitionGroup>
-          <CSSTransition
+        {/* <TransitionGroup> */}
+        {/* <CSSTransition
             classNames='fade'
             key={location.key}
             timeout={1000}
@@ -75,31 +72,34 @@ class App extends Component {
                 opacity: 1
               })
             }}
-          >
-            <Switch location={location}>
-              <Route
-                exact
-                path='/'
-                render={props => <NoteListContainer {...props} />}
-              />
-              <Route
-                path='/create'
-                render={props => <CreateNote {...props} />}
-              />
-              <Route
-                path='/note/:id'
-                render={props => (
-                  <UpdateNote
-                    {...props}
-                    note={this.props.notes.find(
-                      note => note.id === props.match.params.id
-                    )}
-                  />
+          > */}
+        <Switch location={location}>
+          <Route
+            exact
+            path='/'
+            render={props => {
+              return (
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                  <NoteListContainer {...props} />
+                </DragDropContext>
+              )
+            }}
+          />
+          <Route path='/create' render={props => <CreateNote {...props} />} />
+          <Route
+            path='/note/:id'
+            render={props => (
+              <UpdateNote
+                {...props}
+                note={this.props.notes.find(
+                  note => note.id === props.match.params.id
                 )}
               />
-            </Switch>
-          </CSSTransition>
-        </TransitionGroup>
+            )}
+          />
+        </Switch>
+        {/* </CSSTransition>
+        </TransitionGroup> */}
       </div>
     )
   }
