@@ -61,6 +61,7 @@ class NoteListContainer extends Component {
   }
 
   componentDidMount () {
+    this.props.fetchNotes()
     TweenMax.staggerFrom(
       this.list,
       0.5,
@@ -73,10 +74,14 @@ class NoteListContainer extends Component {
     let result = Array.from(list)
     const [removed] = result.splice(startIndex, 1)
     result.splice(endIndex, 0, removed)
-    return result
+    return result.map((item, index) => {
+      item.order = index
+      return item
+    })
   }
 
   onDragEnd = result => {
+    console.log(result)
     if (!result.destination) {
       return
     }
@@ -128,6 +133,7 @@ class NoteListContainer extends Component {
                             ...provided.draggableProps.style
                           }}
                         >
+                          {console.log('provided', provided, snapshot)}
                           <div className='note-moment'>
                             {moment(note.createdAt).fromNow()}
                           </div>

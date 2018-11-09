@@ -1,10 +1,10 @@
-import { FETCH_NOTES } from '../actions/types'
+import { FETCH_NOTES, CREATE_NOTE } from '../actions/types'
 
 const notesReducer = (state = [], action) => {
   switch (action.type) {
     case FETCH_NOTES:
       return action.payload.sort((a, b) => {
-        return Number(b.createdAt) - Number(a.createdAt)
+        return Number(a.order) - Number(b.order)
       })
     case 'DND_NOTES':
       return action.payload

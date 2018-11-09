@@ -64,4 +64,12 @@ export const deleteNote = id => dispatch => {
     .then(() => dispatch({ type: DELETE_NOTE, payload: id }))
 }
 
-export const dndNote = notes => ({ type: 'DND_NOTES', payload: notes })
+export const dndNote = notes => dispatch => {
+  dispatch({ type: 'DND_NOTES', payload: notes })
+  const batch = db.batch()
+  notes.forEach((note, index) => {
+    note.order = index
+    batch.update(db.collection('notes').doc(note.id), note)
+  })
+  batch.commit()
+}

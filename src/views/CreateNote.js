@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as actions from '../store/actions'
 import { ChevronLeft, Share, Info, Save } from 'react-feather'
-import { TweenMax, Power1 } from 'gsap/all'
 class CreateNote extends Component {
   constructor (props) {
     super(props)
@@ -21,9 +20,14 @@ class CreateNote extends Component {
 
   handleSubmit = e => {
     const { title, content } = this.state
+    let note = this.state
+    const { notes } = this.props
+    const order = notes.length ? notes.length : 0
+    console.log('order', order, notes.length)
+    note.order = order
     e.preventDefault()
     if (!title.trim() || !content.trim()) return this.props.history.push('/')
-    this.props.createNote(this.state)
+    this.props.createNote(note)
     this.props.history.push('/')
   }
 
@@ -86,4 +90,8 @@ class CreateNote extends Component {
   }
 }
 
-export default connect(null, actions)(CreateNote)
+const mapStateToProps = ({ notes }) => ({
+  notes
+})
+
+export default connect(mapStateToProps, actions)(CreateNote)
