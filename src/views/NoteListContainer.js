@@ -6,7 +6,7 @@ import moment from 'moment'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { Link } from 'react-router-dom'
-import { Droppable, Draggable } from 'react-beautiful-dnd'
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { TweenMax, Power1 } from 'gsap'
 
 moment.relativeTimeThreshold('s', 60)
@@ -61,13 +61,31 @@ class NoteListContainer extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchNotes()
     TweenMax.staggerFrom(
       this.list,
       0.5,
       { y: 50, autoAlpha: 0, ease: Power1.easeIn },
       0.3
     )
+  }
+
+  reorder = (list, startIndex, endIndex) => {
+    let result = Array.from(list)
+    const [removed] = result.splice(startIndex, 1)
+    result.splice(endIndex, 0, removed)
+    return result
+  }
+
+  onDragEnd = result => {
+    if (!result.destination) {
+      return
+    }
+    const newOrder = this.reorder(
+      this.props.notes,
+      result.source.index,
+      result.destination.index
+    )
+    this.props.dndNote(newOrder)
   }
 
   render () {
@@ -86,63 +104,61 @@ class NoteListContainer extends Component {
               <Search color='#9F9F9F' size='20px' />
             </button>
           </nav>
-          <Droppable droppableId='lol'>
-            {(provided, snapshot) => (
-              <ul
-                className='note-list'
-                ref={provided.innerRef}
-                style={{
-                  backgroundColor: snapshot.isDraggingOver
-                    ? 'blue'
-                    : 'lightgrey'
-                }}
-                {...provided.droppableProps}
-              >
-                {notes.map((note, i) => (
-                  <Draggable
-                    draggableId={String(note.id)}
-                    key={note.id}
-                    index={i}
-                  >
-                    {(provided, snapshot) => (
-                      <li
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        className='note-container'
-                        index={note.id}
-                        note={note}
-                      >
-                        <div className='note-moment'>
-                          {moment(note.createdAt).fromNow()}
-                        </div>
-                        <Link className='note-link' to={`/note/${note.id}`}>
-                          <div className='note'>
-                            <h2 className='note-title'>
-                              {note.title}
-                            </h2>
-                            <p className='note-content'>
-                              {note.content}
-                            </p>
-                          </div>
-                        </Link>
-                        <div
-                          className='note-nav'
-                          onClick={() => {
-                            this.props.deleteNote(note.id)
-                            this.props.fetchNotes()
+          <DragDropContext onDragEnd={this.onDragEnd}>
+            <Droppable droppableId='notes'>
+              {(provided, snapshot) => (
+                <ul className='note-list' ref={provided.innerRef}>
+                  {notes.map((note, i) => (
+                    <Draggable
+                      draggableId={String(note.id)}
+                      key={note.id}
+                      index={i}
+                    >
+                      {(provided, snapshot) => (
+                        <li
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className='note-container'
+                          note={note}
+                          style={{
+                            background: snapshot.isDragging
+                              ? 'lightgreen'
+                              : 'transparent',
+                            ...provided.draggableProps.style
                           }}
                         >
-                          <Trash2 />
-                        </div>
-                      </li>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </ul>
-            )}
-          </Droppable>
+                          <div className='note-moment'>
+                            {moment(note.createdAt).fromNow()}
+                          </div>
+                          <Link className='note-link' to={`/note/${note.id}`}>
+                            <div className='note'>
+                              <h2 className='note-title'>
+                                {note.title}
+                              </h2>
+                              <p className='note-content'>
+                                {note.content}
+                              </p>
+                            </div>
+                          </Link>
+                          <div
+                            className='note-nav'
+                            onClick={() => {
+                              this.props.deleteNote(note.id)
+                              this.props.fetchNotes()
+                            }}
+                          >
+                            <Trash2 />
+                          </div>
+                        </li>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </ul>
+              )}
+            </Droppable>
+          </DragDropContext>
           <button className='new-note' onClick={this.handleCreateNote}>
             <PlusSquare color='white' size='30px' />
           </button>

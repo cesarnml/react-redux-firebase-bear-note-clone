@@ -6,6 +6,8 @@ const notesReducer = (state = [], action) => {
       return action.payload.sort((a, b) => {
         return Number(b.createdAt) - Number(a.createdAt)
       })
+    case 'DND_NOTES':
+      return action.payload
     default:
       return state
   }

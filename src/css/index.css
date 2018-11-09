@@ -189,6 +189,7 @@ table {
   align-items: stretch;
   border-bottom: 1px solid #D8D8D8;
   padding: 10px;
+  position: relative;
 }
 .note-list .note-moment {
   width: 25px;
@@ -216,9 +217,18 @@ table {
   display: flex;
   align-items: center;
 }
+.note-list .note-nav-exp {
+  position: absolute;
+  width: 200px;
+  height: 100%;
+  right: -200px;
+  top: 0;
+  background: blue;
+}
 .note-list .new-note {
+  outline: 0px;
   position: fixed;
-  borer: 0px;
+  border: 0px;
   bottom: 10px;
   right: 10px;
   height: 60px;
@@ -229,7 +239,6 @@ table {
 .note-list .new-note :hover {
   cursor: pointer;
 }
-
 .create-note {
   position: absolute;
   left: 0;

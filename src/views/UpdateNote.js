@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as actions from '../store/actions'
 import { ChevronLeft, Share, Info, Save } from 'react-feather'
-import { TweenMax, Power1 } from 'gsap/all'
 class UpdateNote extends Component {
   constructor (props) {
     super(props)
