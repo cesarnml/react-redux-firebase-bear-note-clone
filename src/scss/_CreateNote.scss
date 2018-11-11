@@ -91,6 +91,7 @@
       background-color: $color-bkg;
       font-size: 1.4rem;
       border: 0;
+      resize: none;
       &:focus {
         outline: 0px;
       }

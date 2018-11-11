@@ -1,4 +1,4 @@
-import { db } from '../../views/NoteListContainer'
+import { db } from '../../views/NoteList'
 
 import {
   CREATE_NOTE,
@@ -68,7 +68,7 @@ export const dndNote = notes => dispatch => {
   dispatch({ type: 'DND_NOTES', payload: notes })
   const batch = db.batch()
   notes.forEach((note, index) => {
-    note.order = index
+    note.order = notes.length - 1 - index
     batch.update(db.collection('notes').doc(note.id), note)
   })
   batch.commit()

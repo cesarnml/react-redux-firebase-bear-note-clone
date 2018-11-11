@@ -134,6 +134,14 @@ table {
   border-spacing: 0;
 }
 
+.app-container {
+  position: "absolute";
+  width: 100%;
+  min-height: 100vh;
+  overflow: "hidden";
+  background-color: #FAFAFB;
+}
+
 .note-list {
   position: absolute;
   left: 0;
@@ -189,7 +197,6 @@ table {
   align-items: stretch;
   border-bottom: 1px solid #D8D8D8;
   padding: 10px;
-  position: relative;
 }
 .note-list .note-moment {
   width: 25px;
@@ -217,20 +224,11 @@ table {
   display: flex;
   align-items: center;
 }
-.note-list .note-nav-exp {
-  position: absolute;
-  width: 200px;
-  height: 100%;
-  right: -200px;
-  top: 0;
-  background: blue;
-}
 .note-list .new-note {
-  outline: 0px;
   position: fixed;
   border: 0px;
-  bottom: 10px;
-  right: 10px;
+  bottom: 55px;
+  right: 55px;
   height: 60px;
   width: 60px;
   border-radius: 50%;
@@ -239,6 +237,7 @@ table {
 .note-list .new-note :hover {
   cursor: pointer;
 }
+
 .create-note {
   position: absolute;
   left: 0;
@@ -334,6 +333,7 @@ table {
   background-color: #FAFAFB;
   font-size: 1.4rem;
   border: 0;
+  resize: none;
 }
 .create-note .form-newNote .createContent:focus {
   outline: 0px;

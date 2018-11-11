@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import NoteListContainer from './views/NoteListContainer'
+import NoteList from './views/NoteList'
 import CreateNote from './views/CreateNote'
 import UpdateNote from './views/UpdateNote'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
@@ -12,8 +12,7 @@ class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      isListNote: true,
-      isCreateNote: false
+      isListNote: true
     }
   }
 
@@ -21,67 +20,47 @@ class App extends Component {
     this.props.fetchNotes()
   }
 
+  animateMount = node => {
+    const { isListNote } = this.state
+    TweenMax.from(node, 1, {
+      position: 'absolute',
+      left: isListNote ? '100%' : '-100%',
+      opacity: 1,
+      onComplete: () =>
+        this.setState({
+          isListNote: !isListNote
+        })
+    })
+  }
+
+  animateUnmount = node => {
+    const { isListNote } = this.state
+    TweenMax.to(node, 1, {
+      position: 'absolute',
+      left: isListNote ? '-100%' : '100%',
+      opacity: 0
+    })
+  }
+
+  findNote = (notes, props) =>
+    notes.find(note => note.id === props.match.params.id)
+
   render () {
-    const { location } = this.props
-    const { isListNote, isCreateNote } = this.state
+    const { location, notes } = this.props
     return (
-      <div
-        style={{
-          position: 'absolute',
-          width: '100%',
-          minHeight: '100vh',
-          overflowX: 'hidden',
-          backgroundColor: 'rgb(250,250,250)'
-        }}
-      >
-        <TransitionGroup>
+      <div className='app-container'>
+        <TransitionGroup component={null}>
           <CSSTransition
             classNames='fade'
             key={location.key}
             timeout={1000}
-            // eslint-disable-next-line
-            enter={true}
-            // eslint-disable-next-line
-            exit={true}
-            onEnter={node => {
-              TweenMax.killTweensOf(node)
-              TweenMax.set(node, {
-                position: 'absolute',
-                left: isListNote ? '-100%' : '100%',
-                opacity: 1
-              })
-
-              TweenMax.to(node, 1, {
-                position: 'absolute',
-                left: isListNote ? 0 : 0,
-                opacity: 1,
-                onComplete: () =>
-                  this.setState({
-                    isListNote: !isListNote,
-                    isCreateNote: !isCreateNote
-                  })
-              })
-            }}
-            onExit={node => {
-              TweenMax.killTweensOf(node)
-              TweenMax.set(node, {
-                position: 'absolute',
-                left: isListNote ? 0 : 0,
-                opacity: 1
-              })
-              TweenMax.to(node, 1, {
-                position: 'absolute',
-                left: isListNote ? '100%' : '-100%',
-                opacity: 1
-              })
-            }}
+            enter
+            exit
+            onEnter={this.animateMount}
+            onExit={this.animateUnmount}
           >
             <Switch location={location}>
-              <Route
-                exact
-                path='/'
-                render={props => <NoteListContainer {...props} />}
-              />
+              <Route exact path='/' render={props => <NoteList {...props} />} />
               <Route
                 path='/create'
                 render={props => <CreateNote {...props} />}
@@ -89,12 +68,7 @@ class App extends Component {
               <Route
                 path='/note/:id'
                 render={props => (
-                  <UpdateNote
-                    {...props}
-                    note={this.props.notes.find(
-                      note => note.id === props.match.params.id
-                    )}
-                  />
+                  <UpdateNote {...props} note={this.findNote(notes, props)} />
                 )}
               />
             </Switch>

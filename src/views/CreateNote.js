@@ -23,7 +23,6 @@ class CreateNote extends Component {
     let note = this.state
     const { notes } = this.props
     const order = notes.length ? notes.length : 0
-    console.log('order', order, notes.length)
     note.order = order
     e.preventDefault()
     if (!title.trim() || !content.trim()) return this.props.history.push('/')
@@ -77,7 +76,7 @@ class CreateNote extends Component {
                   className='button-save'
                   tabIndex='3'
                   onSubmit={this.handleSubmit}
-                >
+                  >
                   <Save />
                 </button>
                 : null}
