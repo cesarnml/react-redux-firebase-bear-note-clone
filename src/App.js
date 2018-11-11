@@ -7,6 +7,8 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { TweenMax } from 'gsap/all'
 import * as actions from './store/actions'
 import { connect } from 'react-redux'
+import { DragDropContext } from 'react-beautiful-dnd'
+import { Transition } from 'react-spring'
 
 class App extends Component {
   constructor (props) {
